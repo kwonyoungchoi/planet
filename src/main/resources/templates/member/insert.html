@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>플래닛 로그인</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title text-center mb-4 pb-3">회원가입</h4>
+                        <form th:action="@{/member/insert}" onsubmit="return validatePassword()" method="post">
+                            <div class="form-group">
+                                <input type="text" name="memId" class="form-control" placeholder="ID를 입력하세요" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" name="memPwd" id="memPwd" class="form-control" placeholder="패스워드를 입력하세요" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" name="memPwd2" id="memPwd2" class="form-control" placeholder="패스워드를 재입력하세요" autocomplete="off">
+                            </div>
+                            <div id="mismatch" class="alert alert-danger" style="display:none;">비밀번호가 일치하지 않습니다.</div>
+                            <div class="form-group">
+                                <input type="text" name="memName" class="form-control" placeholder="이름을 입력하세요" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="memTel" class="form-control" placeholder="전화번호를 입력하세요" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control mb-2" id="zipp_code_id" name="memZipcode" maxlength="10" placeholder="우편번호" style="width: 60%; display: inline;">
+                                <input type="button" id="zipp_btn" class="btn btn-primary" onclick="execDaumPostcode()" value="우편번호 찾기"><br>
+                                <input type="text" class="form-control mb-2" name="memAd1" id="UserAdd1" maxlength="40" placeholder="기본 주소를 입력하세요" required>
+                                <div class="invalid-feedback">주소를 입력해주시기 바랍니다!</div>
+                                <input type="text" class="form-control" name="memAd2" id="UserAdd2" maxlength="40" placeholder="상세 주소를 입력하세요">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" name="memAge" class="form-control" placeholder="생년월일을 입력하세요" autocomplete="off">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block mt-4">회원가입</button>
+                            <a th:href="@{/member/login}" class="btn btn-secondary btn-block mt-4">취소</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script>
+        function execDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    var addr = '';
+                    var extraAddr = '';
+
+                    if (data.userSelectedType === 'R') {
+                        addr = data.roadAddress;
+                    } else {
+                        addr = data.jibunAddress;
+                    }
+
+                    if(data.userSelectedType === 'R'){
+                        if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                            extraAddr += data.bname;
+                        }
+                        if(data.buildingName !== '' && data.apartment === 'Y'){
+                            extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                        }
+                        if(extraAddr !== ''){
+                            extraAddr = ' (' + extraAddr + ')';
+                        }
+                    } else {
+                        document.getElementById("UserAdd1").value = '';
+                    }
+
+                    document.getElementById('zipp_code_id').value = data.zonecode;
+                    document.getElementById("UserAdd1").value = addr;
+                    document.getElementById("UserAdd1").value += extraAddr;
+                    document.getElementById("UserAdd2").focus();
+                }
+            }).open();
+        }
+
+        function validatePassword() {
+            var password = document.getElementById("memPwd").value;
+            var password2 = document.getElementById("memPwd2").value;
+
+            if(password !== password2) {
+                document.getElementById("mismatch").style.display="block";
+                return false;
+            }
+            return true;
+        }
+    </script>
+</div>
+</body>
+</html>

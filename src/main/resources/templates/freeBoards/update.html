@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>플래닛 로그인</title>
+
+
+</head>
+
+<body>
+<div layout:fragment="content">
+
+
+
+    <div class="container">
+        <div class="row full-height justify-content-center">
+            <div class="section pb-5 pt-5 pt-sm-2 text-center">
+                <div class="card-3d-wrap mx-auto">
+                    <div class="card-3d-wrapper">
+                        <div class="card-front2">
+                            <div class="center-wrap">
+                                <form th:action="@{/freeBoards/update}" th:method="post" th:object="${freeBoardsDTO}" enctype="multipart/form-data">
+                                    <div class="section text-center">
+                                        <h4 class="mb-4 pb-3" >게시글 수정</h4>
+                                        <input type="hidden" name="freeboardsNum" th:field="*{freeBoardsNum}">
+                                        <div class="mb-3 mt-3">
+                                            <label>
+                                                <select name="freeBoardsClass">
+                                                    <option value="">게시글 분류</option>
+                                                    <option value="유머" th:selected="${freeBoardsDTO.freeBoardsClass == '유머'}">유머</option>
+                                                    <option value="자유" th:selected="${freeBoardsDTO.freeBoardsClass == '자유'}">자유</option>
+                                                    <option value="모임후기" th:selected="${freeBoardsDTO.freeBoardsClass == '모임후기'}">모임후기</option>
+                                                </select>
+                                            </label>
+                                        </div>
+                                        <div class="form-group mt-2">
+                                            <span>제목 :　　</span>
+                                            <input type="text" name="freeBoardsTitle" class="form-style2" th:value="${freeBoardsDTO.freeBoardsTitle}">
+                                            <p th:if="${#fields.hasErrors('freeBoardsTitle')}" th:errors="*{freeBoardsTitle}"></p>
+                                            <i class="input-icon uil uil-lock-alt"></i>
+                                        </div>
+                                        <div class="form-group">
+                                            <span>내용 :　　</span>
+                                            <input type="textarea" name="freeBoardsContent" class="form-style2" th:value="${freeBoardsDTO.freeBoardsContent}">
+                                            <p th:if="${#fields.hasErrors('freeBoardsContent')}" th:errors="${freeBoardsDTO.freeBoardsContent}"></p>
+                                            <i class="input-icon uil uil-user"></i>
+                                        </div>
+                                        <div class="form-group mt-2">
+                                            <label>이미지 업로드</label>
+                                            <input type="file" name="newImages" multiple>
+                                        </div>
+                                        <button type="submit" class="btn mt-4">수정</button> <a th:href="@{'/freeBoards/read/'+ ${freeBoardsDTO.freeBoardsNum}}" class="btn mt-4">취소</a>
+                                    </div>
+                                    <div class="container">
+                                        <div th:if="${not #lists.isEmpty(freeBoardsDTO.getImgDTOList())}" class="mb-3">
+                                            <label> 첨부된 이미지
+                                                <th:block th:each="imgDTO : ${freeBoardsDTO.getImgDTOList()}" class="mb-2">
+                                                    <img th:src="@{|/images/image/@{${imgDTO.oriImgName}}|}" alt="이미지" width="200px">
+                                                    <button type="button" class="btn btn-danger btn-sm" th:onclick="deleteImage(${freeBoardsDTO.boardImgNum})">삭제</button>
+                                                </th:block>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="https://front.codes/" class="logo" target="_blank">
+        <img src="https://assets.codepen.io/1462889/fcy.png" alt="">
+    </a>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <!-- CDN 방식 사용 -->
+    <script>
+        function execDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    // 팝업을 통한 검색 결과 항목 클릭 시 실행
+                    var addr = ''; // 주소_결과값이 없을 경우 공백
+                    var extraAddr = ''; // 참고항목
+
+                    //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                    if (data.userSelectedType === 'R') { // 도로명 주소를 선택
+                        addr = data.roadAddress;
+                    } else { // 지번 주소를 선택
+                        addr = data.jibunAddress;
+                    }
+
+                    if(data.userSelectedType === 'R'){
+                        if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                            extraAddr += data.bname;
+                        }
+                        if(data.buildingName !== '' && data.apartment === 'Y'){
+                            extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                        }
+                        if(extraAddr !== ''){
+                            extraAddr = ' (' + extraAddr + ')';
+                        }
+                    } else {
+                        document.getElementById("UserAdd1").value = '';
+                    }
+
+                    // 선택된 우편번호와 주소 정보를 input 박스에 넣는다.
+                    document.getElementById('zipp_code_id').value = data.zonecode;
+                    document.getElementById("UserAdd1").value = addr;
+                    document.getElementById("UserAdd1").value += extraAddr;
+                    document.getElementById("UserAdd2").focus(); // 우편번호 + 주소 입력이 완료되었음으로 상세주소로 포커스 이동
+                }
+            }).open();
+        }
+    </script>
+
+
+    <script th:inline="javascript">
+        function deleteImage(boardImgNum) {
+            if(confirm("이미지를 삭제하시겠습니까?")) {
+                fetch(`/freeBoards/deleteImage/${boardImgNum}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': [[${_csrf.token}]]
+                    }
+                })
+                    .then(response => {
+                        if(response.ok) {
+                            alert("이미지가 삭제되었습니다.");
+                            window.location.reload();
+                        } else {
+                            alert("이미지 삭제에 실패했습니다.");
+                        }
+                    });
+            }
+        }
+    </script>
+
+
+
+</div>
+
+
+</body>
+
+</html>

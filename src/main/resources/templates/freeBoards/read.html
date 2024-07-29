@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Planet 자유 게시판</title>
+
+    <style>
+        .modal-dialog {
+            max-width: 90%; /* 모달의 너비를 조절하여 적절한 공간을 확보합니다 */
+            margin: 1.75rem auto; /* 세로 위치 조정 */
+        }
+
+        .modal-content {
+            overflow: hidden; /* 모달 콘텐츠가 너무 크면 스크롤을 숨깁니다 */
+        }
+
+        .modal-body {
+            text-align: center; /* 이미지가 중앙에 위치하도록 설정 */
+        }
+
+        .modal-body img {
+            max-width: 100%; /* 이미지의 최대 너비를 모달 콘텐츠의 너비에 맞춥니다 */
+            height: auto; /* 이미지의 높이를 비율에 맞게 자동으로 조정 */
+            display: inline-block; /* 이미지가 중앙에 위치하도록 설정 */
+            cursor: pointer; /* 이미지 클릭 시 커서가 손 모양으로 변경되도록 */
+        }
+    </style>
+
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div class="container">
+        <div class="row full-height justify-content-center">
+            <div class="text-center">
+                <div class="card-3d-wrap mx-auto">
+                    <div class="card-front2">
+                        <div class="center-wrap">
+                            <div class="mb-3 mt-3">
+                                <label class="form-label">글 분류</label>
+                                <input name="freeBoardsClass" th:field="*{freeBoardsDTO.freeBoardsClass}" readonly>
+                            </div>
+                            <div class="mb-3 mt-3">
+                                <label class="form-label">제목</label>
+                                <input type="text" class="form-control" name="freeBoardsTitle" th:field="*{freeBoardsDTO.freeBoardsTitle}" readonly>
+                            </div>
+                            <label class="form-label">내용</label>
+                            <textarea class="form-control form-height" name="freeBoardsContent" th:field="*{freeBoardsDTO.freeBoardsContent}" readonly></textarea>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" name="memName" th:field="*{freeBoardsDTO.memName}" readonly>
+                            </div>
+                            <div th:if="${not #lists.isEmpty(freeBoardsDTO.getImgDTOList())}" class="mb-3">
+                                <label> 첨부된 이미지 <br>
+                                    <th:block th:each="imgDTO : ${freeBoardsDTO.getImgDTOList()}" class="mb-2">
+                                        <img th:src="@{'/images/image/' + ${imgDTO.oriImgName}}"
+                                             alt="이미지"
+                                             class="img-thumbnail"
+                                             onclick="showImageModal(this.src)">
+                                    </th:block>
+                                </label>
+                            </div>
+                            <div class="mb-3">
+                                <a th:href="@{/freeBoards/list}">
+                                    <button type="button"> 목록 </button>
+                                </a>
+                                <a th:href="@{'/freeBoards/update/' + ${freeBoardsDTO.freeBoardsNum}}">
+                                    <button type="button"> 수정 </button>
+                                </a>
+                            </div>
+                            <div>
+                                <table class="table table-hover">
+                                    <thead>
+                                    <colgroup>
+                                        <col style="width:200px">
+                                        <col style="width:600px">
+                                        <col style="width:120px">
+                                    </colgroup>
+                                    <label class="form-label">댓글</label>
+                                    <tr>
+                                        <th>글쓴이</th>
+                                        <th>내용</th>
+                                        <th>작성일자</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="data, iterStat : ${freeBoardsDTO.getFreeBoardsReplyDTOList()}">
+                                        <td th:text="${data.memName}" readonly></td>
+                                        <td th:text="${data.freeBoardsReplyContent}" readonly></td>
+                                        <td th:text="${#temporals.format(data.modDate, 'yyyy-MM-dd')}" readonly></td>
+                                        <td>
+                                            <a class="text-end" type="button"
+                                               th:onclick="|location.href=@{/freeBoardsReply/remove/}+${data.freeBoardsReplyNum} + ?no=${freeBoardsDTO.freeBoardsNum}|">
+                                                삭제
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div>
+                                <form th:action="@{/freeBoardsReply/insert}" th:method="post">
+                                    <div class="mb-3 mt-3">
+                                        <input type="hidden" name="freeBoardsNum" th:value="*{freeBoardsDTO.freeBoardsNum}">
+                                    </div>
+                                    <div class="mb-3 mt-3">
+                                        <label class="form-label">댓글</label>
+                                        <textarea class="form-control form-height2" name="freeBoardsReplyContent"></textarea>
+                                    </div>
+                                    <div class="mb-3 mt-3">
+                                        <label class="form-label">이름</label>
+                                        <label>
+                                            <input type="text" name="memName" th:value="${session.memName}" readonly>
+                                        </label>
+                                        <button type="submit" class="btn btn-primary">댓글등록</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="space"></div> <!-- 여기에 공간을 만듭니다 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="space"></div> <!-- 여기에 공간을 만듭니다 -->
+
+
+    <!-- 모달 HTML -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">이미지 보기</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img id="modalImage" src="" alt="이미지" onclick="closeModal()">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // 전역에서 사용할 수 있도록 closeModal 함수 정의
+        function closeModal() {
+            $('#imageModal').modal('hide');
+        }
+
+        function showImageModal(src) {
+            $('#modalImage').attr('src', src);
+            $('#imageModal').modal('show');
+        }
+
+        // 모달이 열린 후 이미지 크기 조정
+        $('#imageModal').on('shown.bs.modal', function () {
+            var modalBody = $(this).find('.modal-body');
+            var modalImage = $(this).find('#modalImage');
+
+            modalBody.css({
+                'overflow': 'auto',
+                'text-align': 'center'
+            });
+
+            modalImage.css({
+                'max-width': 'none',
+                'height': 'auto'
+            });
+        });
+
+        // 모달을 닫는 이벤트 핸들러
+        $('#imageModal').on('hide.bs.modal', function () {
+            $('#modalImage').attr('src', ''); // 모달 닫을 때 이미지 URL 초기화
+        });
+    </script>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            var cardBack = document.querySelector('.card-back3');
+            var content = document.querySelector('.container');
+
+            function resizeContent() {
+                var maxHeight = cardBack.offsetHeight;
+                content.style.height = maxHeight + 'px';
+
+                var backgroundHeight = maxHeight * 5;
+                cardBack.style.backgroundSize = 'auto ' + backgroundHeight + 'px';
+            }
+
+            window.addEventListener('resize', resizeContent);
+            resizeContent();
+        });
+    </script>
+</div>
+</body>
+</html>

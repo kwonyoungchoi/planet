@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+
+
+
+</head>
+<body>
+<div th:fragment="header">
+
+
+
+    <nav class="navbar navbar-light navbar-expand-md sticky-top navbar-shrink py-3" id="mainNav">
+        <div class="container"><a class="navbar-brand d-flex align-items-center" href="/">
+            <img src="/assets/img/planet/smalllogo.png" alt="작은별"  width="100" height="auto">
+                    </svg></span><span>Planet</span></a><button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+        </div>
+
+        <div class="container" id="navcol-2">
+            <ul class="navbar-nav mx-auto">
+                <li sec:authorize="hasAnyRole('MANAGER', 'ADMIN')" class="nav-item"><a class="nav-link" th:href="@{/member/list}">회원 관리</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/planet/information}">플래닛 소개</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/boardGameInformation/list}">보드게임 정보</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/freeBoards/list}">자유게시판</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/calendar/}">정모/벙</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/suggestions/list}">건의사항</a></li>
+            </ul>
+            <!-- memName이 null이 아닌 경우에만 출력 -->
+            <p ></p>
+            <!-- memName이 null인 경우 -->
+            <p th:if="${session.memName == null}">로그인을 해주세요.</p>
+            <a sec:authorize="isAnonymous()" class="btn btn-primary shadow" role="button" th:href="@{/member/login}">로그인</a>
+            <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false" th:if="${session.memName != null}" th:text="'어서오세요 ' + ${session.memName} + '님'"></a>
+                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <!--메뉴의 항목 노출 위해서-->
+                        <!--페이지 접근은 auth.requestMatchers에서 담당-->
+                        <!--로그인 이전에 노출(모두 노출)-->
+                        <!--로그인 이전에 노출-->
+                        <div class="dropdown-divider"></div>
+                        <!--로그인 이후에 노출(인증된 경우에만)-->
+                        <a sec:authorize="isAuthenticated()" class="dropdown-item" th:href="@{/member/update/__${session.MemNum}__}">회원수정</a>
+                        <!--로그인 이후에 노출(인증된 경우에만)-->
+                        <a sec:authorize="isAuthenticated()" class="dropdown-item" th:href="@{/member/logout}">로그아웃</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+</div>
+
+</body>
+</html>

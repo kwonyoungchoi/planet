@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>플래닛 로그인</title>
+    <link rel="stylesheet" href="/assets/bootstrap/css/login6.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        /* CSS 스타일링 */
+        .error-message {
+            color: red;
+        }
+    </style>
+
+</head>
+
+<body>
+<div layout:fragment="content">
+
+
+
+
+    <div class="section">
+        <div class="container">
+            <div class="row full-height justify-content-center">
+                <div class="text-center">
+                    <div class="card-3d-wrap mx-auto">
+                        <div class="card-front2">
+                            <div class="center-wrap">
+                                <form id="loginForm" th:action="@{/member/login}" method="post">
+                                <div class="section text-center">
+                                    <h4 class="mb-4 pb-3">로그인</h4>
+                                    <div class="form-group">
+                                        <input type="text" name="memId" class="form-style" placeholder="ID를 입력해주세요"  autocomplete="off">
+                                        <i class="input-icon uil uil-at"></i>
+                                        <span id="memIdError" class="error-message"></span>
+                                    </div>
+                                    <div class="form-group mt-2">
+                                        <input type="password" name="memPwd"  class="form-style" placeholder="비밀번호를 입력해주세요"  autocomplete="off">
+                                        <i class="input-icon uil uil-lock-alt"></i>
+                                        <span id="memPwdError" class="error-message"></span>
+                                    </div>
+                                    <button type="submit" class="btn mt-4">로그인</button> <a th:href="@{/member/insert}" class="btn mt-4">회원가입</a>
+                                    <p class="mb-0 mt-4 text-center"><a href="#0" class="link">비밀번호를 잊으셨습니까?</a></p>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <!-- CDN 방식 사용 -->
+
+
+
+
+
+</div>
+
+
+</body>
+
+</html>
