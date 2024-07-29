@@ -4,12 +4,14 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter @Setter @ToString
 @AllArgsConstructor @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "boardGameInformation")
+@Table(name = "board_game_information_entity")
 @SequenceGenerator(
         name = "board_game_information_entity_sql",
         sequenceName = "board_game_information_entity_sql",
@@ -29,13 +31,16 @@ public class BoardGameInformationEntity extends BaseTimeEntity {
     @Column(length = 3000, nullable = false)
     private String boardGameContent;        //보드게임 내용
     @Column(length = 1000, nullable = false)
-    private String boardGameFileURL;        //보드게임 사진/동영상 주소
-    private Boolean recommendation;         //추천여부
 
+
+
+    @OneToMany(mappedBy = "boardGameInformationEntity", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<BoardImgEntity> boardImgEntities = new ArrayList<>();
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private MemberEntity member;
+    private MemberEntity memberEntity;
 
 
 }

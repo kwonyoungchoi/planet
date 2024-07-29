@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<!--en-한글브라우저에서 한글/영어 번역-->
+
+<head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <!--반응형웹-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--스프링부트에 css 색상, 모양-->
+
+
+
+</head>
+<body>
+<!--메뉴시작-->
+<div layout:fragment="content">
+    <div id="main-area" class="skin-1080 fl">
+        <div id="sub-tit" style="margin-top: 20px; margin-bottom: 20px; margin-left: 100px; margin-right: 10px;">
+            <div class="title_area">
+                <div class="info_tit">
+                    <h3 class="sub-tit-color">자유 게시판</h3>
+                </div>
+            </div>
+            <div class="me_feed">
+            </div>
+        </div>
+        <div class="article-board m-tcol-c" id="upperArticleList">
+            <table>
+                <colgroup>
+                    <col style="width:70px">
+                    <col style="width:70px">
+                    <col style="width:70px">
+                    <col style="width:500px">
+                    <col style="width:80px">
+                    <col style="width:88px">
+                    <col style="width:68px">
+                    <col style="width:88px">
+                </colgroup>
+                <thead>
+                    <tr id="normalTableTitle">
+                        <th></th>
+                        <th>번호</th> <!--칸-->
+                        <th>글 분류</th>
+                        <th>제목</th>
+                        <th>글쓴이</th>
+                        <th>생성일자</th>
+                        <th>수정시간</th>
+                        <th>수정일자</th>
+                    </tr>
+                    <tr id="simpleTableTitle" style="display:none;">
+                        <th colspan="6" style="height:0px;padding: 0px;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="data:${list}">
+                        <td></td>
+                        <td th:text="${data.boardGameNum}"></td>
+                        <td th:text="${data.boardGameClass}"></td>
+                        <td><!--여러 태그로 구성되어 있을때 가장 안쪽에 태그에 변수를 몰아서 입력-->
+                            <a th:text="${data.boardGameTitle}" th:href="@{'/boardGameInformation/read/' + ${data.boardGameNum}}"></a>
+                        </td> <!-상세페이지-->
+                        <td th:text="${data.memName}"></td>
+                        <td th:text="${#temporals.format(data.regDate, 'yyyy-MM-dd')}"></td>
+                        <td th:text="${@dateUtil.formatModDate(data.modDate)}"></td>
+                        <td th:text="${#temporals.format(data.modDate, 'yyyy-MM-dd')}"></td>
+                        <td><a th:href="@{'/boardGameInformation/update/'+ ${data.boardGameNum}}">수정</a>
+                            <!--페이지연결 form, a, button-->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-8"> <!--검색 추가-->
+                <form th:action="@{/boardGameInformation/list}" class="board_search off" method="get">
+                    <input type="hidden"  value="">
+                    <input type="hidden"  value="s">
+                    <input type="hidden"  value="c">
+                    <input type="hidden"  value="w">
+                    <input type="hidden"  value="sc">
+                    <input type="hidden"  value="scw">
+                    <input type="text" name="search" th:value="${search}" class="iText">
+                    <select name="type">
+                        <option th:seleceted="${type==null}" value="">검색메뉴선택</option>
+                        <option th:seleceted="${type=='i'}" value="s">아이디</option>
+                        <option th:seleceted="${type=='n'}" value="c">이름</option>
+                        <option th:seleceted="${type=='t'}" value="w">전화번호</option>
+                        <option th:seleceted="${type=='a'}" value="sc">주소1</option>
+                        <option th:seleceted="${type=='g'}" value="scw">생년월일</option>		</select>
+                    <button type="submit" class="btn btn-success btn-margin"  >검색</button>
+                    <a class="btn btn-success" th:href="@{/boardGameInformation/insert}">글쓰기</a>
+                </form>
+            </div>
+            <div class="col-lg-3"></div>
+            <!--검색끝-->
+            <!--페이지번호-->
+
+            <!--
+            pageinfo.put("startPage", startPage);       //[1].... , [<<]
+            pageinfo.put("endPage", endPage);           //....[10]
+            pageinfo.put("prevPage", prevPage);         //[<]
+            pageinfo.put("currentPage", currentPage);   //[3]
+            pageinfo.put("nextPage", nextPage);         //[>]
+            pageinfo.put("lastPage", lastPage);         //[>>]
+            -->
+
+            <ul class="pagination justify-content-center" >
+                <!--현재 1페이지이면 출력하지 않는다.-->
+                <li class="page-item" th:unless="${startPage==1}">
+                    <a class="page-link" th:href="@{/boardGameInformation/list(page=1)}"><<</a>
+                </li>
+                <!-- 앞페이지 이동(1페이지면 이동할 앞페이지가 존재하지 않는다..)-->
+                <li class="page-item" th:unless="${currentPage==1}">
+                    <a class="page-link" th:href="@{/boardGameInformation/list(page=${prevPage})}"><</a>
+                </li>
+                <!--페이지번호를 출력하는 부분, 반복문을 이용해서 지정된 개수만큼 출력-->
+                <!--일반 for문 number.sequence(순차반복)(시작, 끝값, 증가값)-->
+                <span th:each="page:${#numbers.sequence(startPage, endPage, 1)}">
+                    <!--현재페이지가 아니면 비활성 페이지번호를 출력-->
+                    <li class="page-item" th:unless="${page==currentPage}"> <!--화면에 출력할 페이지번호-->
+                    <a class="page-link" th:href="@{/boardGameInformation/list(page=${page})}">[[${page}]]</a>
+                    </li>
+                                <!--현재페이지가 맞으면 활성화 페이지번호를 출력-->
+                    <li class="page-item active" th:if="${page==currentPage}"> <!--현재 페이지 번호-->
+                    <a class="page-link" th:href="@{/boardGameInformation/list(page=${page})}">[[${page}]]</a>
+                    </li>
+                </span>
+                <!-- 뒤페이지이동(현재 페이지가 마지막이면 다음페이지가 없음-->
+                <li class="page-item" th:unless="${currentPage==lastPage}">
+                    <a class="page-link" th:href="@{/boardGameInformation/list(page=${nextPage})}">></a>
+                </li>
+                <!--화면에 마지막페이지번호와 전체페이지번호가 같으면-->
+                <li class="page-item" th:unless="${endPage==lastPage}">
+                    <a class="page-link" th:href="@{/boardGameInformation/list(page=${lastPage})}">>></a>
+                </li>
+            </ul>
+            <!--페이지번호끝-->
+    </div>
+<!--메뉴끝-->
+<!--목록(임시값으로 모양)-->
+<!--목록끝-->
+<!--검색-->
+
+
+
+</div>
+</div>
+
+
+<!--modal-->
+<!--javascript-->
+</body>
+</html>

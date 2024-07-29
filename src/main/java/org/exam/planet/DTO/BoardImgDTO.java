@@ -27,6 +27,8 @@ public class BoardImgDTO {
 
     private Long freeBoardsNum;
 
+    private Long boardGameNum;
+
     private String fileUploadFullUrl;
 
     private FreeBoardsEntity freeBoardsEntity;

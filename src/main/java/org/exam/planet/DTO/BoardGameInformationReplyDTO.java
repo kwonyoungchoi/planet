@@ -9,12 +9,12 @@ import java.time.LocalDateTime;
 @Getter @Setter @ToString
 @AllArgsConstructor @NoArgsConstructor
 @Builder
-public class FreeBoardsReplyDTO {
+public class BoardGameInformationReplyDTO {
 
 
-    private Long freeBoardsReplyNum;        //자유게시판 번호
+    private Long boardGameInformationReplyNum;        //자유게시판 번호
     @NotEmpty(message = "생략이 불가능 합니다.")
-    private String freeBoardsReplyContent;  //자유게시판 내용
+    private String boardGameInformationReplyContent;  //자유게시판 내용
     private LocalDateTime regDate;
     private LocalDateTime modDate;
 
@@ -23,8 +23,7 @@ public class FreeBoardsReplyDTO {
     private String memId;
     private String memName;
 
-    private Long freeBoardsNum;
-
+    private Long boardGameNum;
 
 
 }

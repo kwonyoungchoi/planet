@@ -3,7 +3,6 @@ package org.exam.planet.Service;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.exam.planet.DTO.FreeBoardsDTO;
 import org.exam.planet.DTO.FreeBoardsReplyDTO;
 import org.exam.planet.Entity.FreeBoardsEntity;
 import org.exam.planet.Entity.FreeBoardsReplyEntity;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 

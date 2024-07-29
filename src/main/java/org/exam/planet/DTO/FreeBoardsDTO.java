@@ -1,13 +1,8 @@
 package org.exam.planet.DTO;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.exam.planet.Entity.BaseTimeEntity;
-import org.exam.planet.Entity.FreeBoardsEntity;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

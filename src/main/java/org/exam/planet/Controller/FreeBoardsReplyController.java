@@ -6,15 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.exam.planet.DTO.FreeBoardsReplyDTO;
 import org.exam.planet.Service.FreeBoardsReplyService;
-import org.exam.planet.Service.FreeBoardsService;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 
 @Controller

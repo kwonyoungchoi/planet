@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "freeBoardsReply")
+@Table(name = "free_boards_reply")
 @SequenceGenerator(
         name = "free_boards_reply_entity_sql",
         sequenceName = "free_boards_reply_entity_sql",
@@ -22,12 +22,19 @@ public class FreeBoardsReplyEntity extends BaseTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "free_boards_reply_entity_sql")
     private Long freeBoardsReplyNum;        //자유게시판 번호
+
     @Column(length = 500, nullable = false)
     private String freeBoardsReplyContent;  //자유게시판 내용
+
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     private MemberEntity memberEntity;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private FreeBoardsEntity freeBoardsEntity;
+
+
 
     private Long freeBoardsNum;
 

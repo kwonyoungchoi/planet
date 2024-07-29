@@ -1,11 +1,12 @@
 package org.exam.planet.DTO;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
-import org.exam.planet.Entity.BaseTimeEntity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter @Setter @ToString
 @AllArgsConstructor @NoArgsConstructor
@@ -21,15 +22,29 @@ public class BoardGameInformationDTO {
     private String boardGameClass;          //보드게임 분류
     @NotEmpty(message = "생략이 불가능 합니다.")
     private String boardGameContent;        //보드게임 내용
-    @NotEmpty(message = "사진을 하나 이상 올려주세요")
-    private String boardGameFileURL;        //보드게임 사진/동영상 주소
-    private Boolean recommendation;         //추천여부
+
+
+//    private String boardGameFileURL;        //보드게임 사진/동영상 주소
+
 
     private LocalDateTime regDate;
     private LocalDateTime modDate;
 
 
-    private MemberDTO member;
+    private Long boardImgNum;
+
+    private Long memNum;
+    @NotBlank(message = "생략이 불가능 합니다.")
+    private String memName;
+    private String memId;
+    private String boardImgName;
+
+    @Builder.Default
+    // 이미지 리스트 받는 변수선언
+    private List<BoardImgDTO> imgDTOList = new ArrayList<>();
+
+    @Builder.Default
+    private List<BoardGameInformationReplyDTO> boardGameInformationReplyDTOList = new ArrayList<>();
 
 
 }

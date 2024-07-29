@@ -27,12 +27,14 @@ public class BoardImgEntity extends BaseTimeEntity{
     private String boardImgName;
     private String oriImgName;
     private String fileUploadFullUrl;
-//    private String uploadPath;
     private String imageType;       // 대표 이미지
 
 
     @ManyToOne(fetch = FetchType.LAZY)
     private FreeBoardsEntity freeBoardsEntity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private BoardGameInformationEntity boardGameInformationEntity;
 
 
 }
