@@ -6,8 +6,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>플래닛 로그인</title>
-
+    <title>게시글 등록</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
 
@@ -29,13 +29,16 @@
                                                         <!--name명과 DTO에 변수명이 동일하면 Controller 자동으로 연동-->
                                                         <!--변수명이 다르면 Controller @Requestparam으로 수동으로 연동-->
                                                         <div class="mb-3 mt-3">
-                                                            <label>
-                                                                <select name="freeBoardsClass" th:field="*{freeBoardsDTO.freeBoardsClass}">
-                                                                    <option value="" >게시글 분류</option>
+                                                            <label for="freeBoardsClass" class="form-label">
+                                                                <label for="freeBoardsClass" class="form-label">
+                                                                <select id="freeBoardsClass" name="freeBoardsClass" class="form-select" required>
+                                                                    <option value="" disabled selected>게시글 분류를 선택해 주세요</option>
                                                                     <option value="유머">유머</option>
                                                                     <option value="자유">자유</option>
                                                                     <option value="모임후기">모임후기</option>
                                                                 </select>
+                                                                </label>
+                                                                <div id="freeBoardsClassError" class="text-danger mt-2" style="display:none;">게시글 분류를 선택해 주세요.</div>
                                                             </label>
                                                         </div>
                                                         <div class="mb-3 mt-3" > <!--for 생략가능-->
@@ -93,7 +96,8 @@
 
 
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-    <!-- CDN 방식 사용 -->
+
+    <!-- 사진 등록 -->
     <script>
         $(document).ready(function () {
             let fileUploadCount = 1; // 현재 추가된 파일 업로드 필드 수
@@ -113,6 +117,7 @@
             });
         });
     </script>
+
 
 
 

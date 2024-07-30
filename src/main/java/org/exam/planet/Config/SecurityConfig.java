@@ -1,11 +1,8 @@
 package org.exam.planet.Config;
 //보안인증관련 빈스 설정
 
-import jakarta.servlet.MultipartConfigElement;
 import lombok.RequiredArgsConstructor;
-import org.exam.planet.Config.CustomLoginSuccessHandler;
 import org.exam.planet.Repository.MemberRepository;
-import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,7 +11,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.util.unit.DataSize;
 
 @Configuration
 @EnableWebSecurity
@@ -39,7 +35,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((auth) -> {
             auth.requestMatchers("/", "/js/**", "/css/**", "/assets/**", MEMBER_LOGIN_URL, "/member/insert", "/planet/**", "/images/**").permitAll();
-            auth.requestMatchers("/member/update/**", "/freeBoards/**", "/freeBoardsReply/**", "/images/**", "/boardGameInformation/**", "/boardGameInformationReply/**").hasAnyRole("USER", "MANAGER", "ADMIN");
+            auth.requestMatchers("/member/update/**", "/freeBoards/**", "/freeBoardsReply/**", "/images/image/freeBoars", "/images/image/boardGame", "/boardGameInformation/**", "/boardGameInformationReply/**").hasAnyRole("USER", "MANAGER", "ADMIN");
             auth.requestMatchers("/member/**").hasAnyRole("MANAGER", "ADMIN");
         });
 

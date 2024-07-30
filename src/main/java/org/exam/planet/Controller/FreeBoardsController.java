@@ -7,6 +7,7 @@ import org.exam.planet.DTO.BoardImgDTO;
 import org.exam.planet.DTO.FreeBoardsDTO;
 import org.exam.planet.DTO.FreeBoardsReplyDTO;
 import org.exam.planet.Service.*;
+import org.exam.planet.util.ModelUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -21,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.Map;
 
 
 @Controller
@@ -31,7 +31,7 @@ public class FreeBoardsController {
 
     private final FreeBoardsService freeBoardsService;
     private final FreeBoardsReplyService freeBoardsReplyService;
-    private final FileService fileService;
+    private final FreeBoardsFileService freeBoardsFileService;
 
 
 
@@ -54,12 +54,12 @@ public class FreeBoardsController {
 
         log.info("게시글 등록 전송");
 
+
         if (bindingResult.hasErrors()) {
             return "freeBoards/insert";
         }
 
         freeBoardsService.insert(freeBoardsDTO, files);
-        fileService.saveBoardImg(files, freeBoardsDTO.getFreeBoardsNum());
 
         return "redirect:/freeBoards/list";
     }
@@ -69,7 +69,7 @@ public class FreeBoardsController {
     @GetMapping("/freeBoards/update/{freeBoardsNum}")
     public String updateForm(@PathVariable Long freeBoardsNum, Model model) { //(받고, 보낼변수)
         FreeBoardsDTO freeBoardsDTO = freeBoardsService.read(freeBoardsNum);
-        List<BoardImgDTO> boardImgDTOS = fileService.imgList(freeBoardsNum);
+        List<BoardImgDTO> boardImgDTOS = freeBoardsFileService.imgList(freeBoardsNum);
 
         freeBoardsDTO.setImgDTOList(boardImgDTOS);
 
@@ -91,7 +91,7 @@ public class FreeBoardsController {
 
         // 파일 업로드를 위한 로직 추가
         if (files != null && files.length > 0) {
-            fileService.saveBoardImg(files, freeBoardsDTO.getFreeBoardsNum());
+            freeBoardsFileService.saveBoardImg(files, freeBoardsDTO.getFreeBoardsNum());
         }
 
         redirectAttributes.addFlashAttribute("result", "updated");
@@ -114,7 +114,7 @@ public class FreeBoardsController {
 
         FreeBoardsDTO freeBoardsDTO = freeBoardsService.read(freeBoardsNum);
         List<FreeBoardsReplyDTO> freeBoardsReplyDTOS = freeBoardsReplyService.list(freeBoardsNum);
-        List<BoardImgDTO> boardImgDTOS = fileService.imgList(freeBoardsNum);
+        List<BoardImgDTO> boardImgDTOS = freeBoardsFileService.imgList(freeBoardsNum);
 
 
         freeBoardsDTO.setImgDTOList(boardImgDTOS);
@@ -148,13 +148,9 @@ public class FreeBoardsController {
 
         Page<FreeBoardsDTO> freeBoardsDTOS = freeBoardsService.list(pageable, type, search);
 
+        // 페이지 정보
+        ModelUtil.addPageAttributes(model, freeBoardsDTOS, type, search);
 
-        //추가로 페이지정보도 view에 전달(하단에 출력할 정보를 가공)
-        Map<String, Integer> pageinfo = MemberPageService.pagination(freeBoardsDTOS);
-        //addAllAttributes = 여러개의 변수를 한번에 전달할 때
-        model.addAllAttributes(pageinfo);
-        //서비스 처리(전체조회)
-        model.addAttribute("list", freeBoardsDTOS);
         return "freeBoards/list";
     }
 
@@ -164,7 +160,7 @@ public class FreeBoardsController {
     public ResponseEntity<?> deleteImage(@PathVariable Long boardImgNum) {
         try {
             // 이미지 삭제 로직 수행
-            boolean isDeleted = fileService.deleteImageById(boardImgNum);
+            boolean isDeleted = freeBoardsFileService.deleteImageById(boardImgNum);
             if (isDeleted) {
                 return ResponseEntity.ok().build();
             } else {

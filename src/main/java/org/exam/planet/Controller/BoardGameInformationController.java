@@ -4,11 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.exam.planet.DTO.*;
 import org.exam.planet.Service.*;
+import org.exam.planet.util.ModelUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @AllArgsConstructor
@@ -27,7 +25,7 @@ public class BoardGameInformationController {
 
     private final BoardGameInformationService boardGameInformationService;
     private final BoardGameInformationReplyService boardGameInformationReplyService;
-    private final FileService fileService;
+    private final BoardGameInformationFileService fileService;
 
 
 
@@ -55,7 +53,6 @@ public class BoardGameInformationController {
         }
 
         boardGameInformationService.insert(boardGameInformationDTO, files);
-        fileService.saveBoardImg(files, boardGameInformationDTO.getBoardGameNum());
 
         return "redirect:/boardGameInformation/list";
     }
@@ -142,16 +139,16 @@ public class BoardGameInformationController {
     public String listForm(@PageableDefault(page=1) Pageable pageable,
                            @RequestParam(value="type", defaultValue="")String type,
                            @RequestParam(value="search", defaultValue="")String search, Model model) {
-
-        Page<BoardGameInformationDTO> boardGameInformationDTOS = boardGameInformationService.list(pageable, type, search);
+        ;
 
 
         //추가로 페이지정보도 view에 전달(하단에 출력할 정보를 가공)
-        Map<String, Integer> pageinfo = MemberPageService.pagination(boardGameInformationDTOS);
-        //addAllAttributes = 여러개의 변수를 한번에 전달할 때
-        model.addAllAttributes(pageinfo);
-        //서비스 처리(전체조회)
-        model.addAttribute("list", boardGameInformationDTOS);
+        Page<BoardGameInformationDTO> boardGameInformationDTOS = boardGameInformationService.list(pageable, type, search);
+
+        // 페이지 정보
+        ModelUtil.addPageAttributes2(model, boardGameInformationDTOS, type, search);
+
+
         return "boardGameInformation/list";
     }
 

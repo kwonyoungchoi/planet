@@ -56,7 +56,7 @@
                             <div th:if="${not #lists.isEmpty(boardGameInformationDTO.getImgDTOList())}" class="mb-3">
                                 <label> 첨부된 이미지 <br>
                                     <th:block th:each="imgDTO : ${boardGameInformationDTO.getImgDTOList()}" class="mb-2">
-                                        <img th:src="@{'/images/image/' + ${imgDTO.oriImgName}}"
+                                        <img th:src="@{'/images/image/boardGame/' + ${imgDTO.oriImgName}}"
                                              alt="이미지"
                                              class="img-thumbnail"
                                              onclick="showImageModal(this.src)">

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "freeBoardsEntity")
+@ToString
 @SequenceGenerator(
         name = "board_img_entity_sql",
         sequenceName = "board_img_entity_sql",

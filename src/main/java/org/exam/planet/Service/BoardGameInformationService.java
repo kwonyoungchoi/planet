@@ -7,14 +7,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.exam.planet.DTO.BoardGameInformationDTO;
 import org.exam.planet.DTO.BoardImgDTO;
-import org.exam.planet.DTO.FreeBoardsDTO;
 import org.exam.planet.Entity.BoardGameInformationEntity;
 import org.exam.planet.Entity.BoardImgEntity;
-import org.exam.planet.Entity.FreeBoardsEntity;
 import org.exam.planet.Entity.MemberEntity;
 import org.exam.planet.Repository.BoardGameInformationRepository;
-import org.exam.planet.Repository.BoardImgRepository;
-import org.exam.planet.Repository.FreeBoardsRepository;
+import org.exam.planet.Repository.FreeBoardsImgRepository;
 import org.exam.planet.Repository.MemberRepository;
 import org.exam.planet.util.FileUpload;
 import org.modelmapper.ModelMapper;
@@ -28,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 //repository, entity, dto를 주입처리
@@ -41,9 +39,9 @@ public class BoardGameInformationService {
     private final ModelMapper modelMapper;
     private final MemberRepository memberRepository;
     private final HttpSession httpSession;
-    private final FileService fileService;
+    private final BoardGameInformationFileService fileService;
     private final FileUpload fileUpload;
-    private final BoardImgRepository boardImgRepository;
+    private final FreeBoardsImgRepository boardImgRepository;
 
 
     //view에서 DTO전달->Entity변환 후 데이터베이스에 저장
@@ -141,13 +139,20 @@ public class BoardGameInformationService {
 
         Page<BoardGameInformationEntity> boardGameInformationEntities;
 
-        if (type.equals("i") && search != null) {
-            boardGameInformationEntities = boardGameInformationRepository.findByBoardGameTitle(search, pageable);
+        if (type.equals("t") && search != null) {
+            boardGameInformationEntities = boardGameInformationRepository.findByBoardGameTitleContaining(search, pageable);
+        } else if (type.equals("c") && search != null) {
+            boardGameInformationEntities = boardGameInformationRepository.findByBoardGameContentContaining(search, pageable);
         } else if (type.equals("n") && search != null) {
-            boardGameInformationEntities = boardGameInformationRepository.findByBoardGameContent(search, pageable);
+            List<Long> memberIds = memberRepository.findByMemNameContaining(search)
+                    .stream()
+                    .map(MemberEntity::getMemNum)
+                    .collect(Collectors.toList());
+            boardGameInformationEntities = boardGameInformationRepository.findByMemberEntityMemNumIn(memberIds, pageable);
         } else {
             boardGameInformationEntities = boardGameInformationRepository.findAll(pageable);
         }
+
 
         return boardGameInformationEntities.map(this::mapToDtoWithUserInfo);
     }

@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="ko" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/main}">
+      layout:decorate="~{layouts/main}"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <!--en-한글브라우저에서 한글/영어 번역-->
 
 <head>
@@ -21,7 +22,7 @@
         <div id="sub-tit" style="margin-top: 20px; margin-bottom: 20px; margin-left: 100px; margin-right: 10px;">
             <div class="title_area">
                 <div class="info_tit">
-                    <h3 class="sub-tit-color">자유 게시판</h3>
+                    <h3 class="sub-tit-color">보드게임 정보 게시판</h3>
                 </div>
             </div>
             <div class="me_feed">
@@ -51,7 +52,7 @@
                         <th>수정일자</th>
                     </tr>
                     <tr id="simpleTableTitle" style="display:none;">
-                        <th colspan="6" style="height:0px;padding: 0px;"></th>
+                        <th colspan="6" style="height:0; padding: 0;"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -76,22 +77,18 @@
             <div class="col-lg-3"></div>
             <div class="col-lg-8"> <!--검색 추가-->
                 <form th:action="@{/boardGameInformation/list}" class="board_search off" method="get">
+                    <label>
                     <input type="hidden"  value="">
-                    <input type="hidden"  value="s">
-                    <input type="hidden"  value="c">
-                    <input type="hidden"  value="w">
-                    <input type="hidden"  value="sc">
-                    <input type="hidden"  value="scw">
                     <input type="text" name="search" th:value="${search}" class="iText">
                     <select name="type">
                         <option th:seleceted="${type==null}" value="">검색메뉴선택</option>
-                        <option th:seleceted="${type=='i'}" value="s">아이디</option>
-                        <option th:seleceted="${type=='n'}" value="c">이름</option>
-                        <option th:seleceted="${type=='t'}" value="w">전화번호</option>
-                        <option th:seleceted="${type=='a'}" value="sc">주소1</option>
-                        <option th:seleceted="${type=='g'}" value="scw">생년월일</option>		</select>
+                        <option th:seleceted="${type=='t'}" value="t">제목</option>
+                        <option th:seleceted="${type=='c'}" value="c">내용</option>
+                        <option th:seleceted="${type=='n'}" value="n">이름</option>
+                    </select>
                     <button type="submit" class="btn btn-success btn-margin"  >검색</button>
-                    <a class="btn btn-success" th:href="@{/boardGameInformation/insert}">글쓰기</a>
+                    <a class="btn btn-success" sec:authorize="hasAnyRole('MANAGER', 'ADMIN')"  th:href="@{/boardGameInformation/insert}">글쓰기</a>
+                    </label>
                 </form>
             </div>
             <div class="col-lg-3"></div>

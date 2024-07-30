@@ -36,10 +36,12 @@ public class BoardGameInformationEntity extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "boardGameInformationEntity", cascade = CascadeType.ALL)
     @Builder.Default
+    @ToString.Exclude
     private List<BoardImgEntity> boardImgEntities = new ArrayList<>();
 
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
     private MemberEntity memberEntity;
 
 

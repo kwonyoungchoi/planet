@@ -21,7 +21,7 @@ public class FileUpload {
   //파일업로드 작업
   //업로드할 파일 이름, 파일의 byte값
 
-  private String uploadPath;
+  private final String uploadPath;
 
   @Autowired
   public FileUpload(@Value("${imgLocation}") String uploadPath) {

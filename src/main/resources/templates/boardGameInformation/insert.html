@@ -29,14 +29,15 @@
                                                         <!--name명과 DTO에 변수명이 동일하면 Controller 자동으로 연동-->
                                                         <!--변수명이 다르면 Controller @Requestparam으로 수동으로 연동-->
                                                         <div class="mb-3 mt-3">
-                                                            <label>
-                                                                <select name="boardGameInformationClass" th:field="*{boardGameInformationDTO.boardGameClass}">
-                                                                    <option value="" >보드게임 분류</option>
-                                                                    <option value="파티">파티</option>
-                                                                    <option value="전략">전략</option>
-                                                                    <option value="추라">머더</option>
-                                                                </select>
-                                                            </label>
+                                                                <label for="boardGameClass" class="form-label">
+                                                                    <select id="boardGameClass" name="boardGameClass" class="form-select" required>
+                                                                        <option value="" disabled selected>보드게임 분류</option>
+                                                                        <option value="파티">파티</option>
+                                                                        <option value="전략">전략</option>
+                                                                        <option value="추리">추리</option>
+                                                                    </select>
+                                                                </label>
+                                                                <div id="freeBoardsClassError" class="text-danger mt-2" style="display:none;">게시글 분류를 선택해 주세요.</div>
                                                         </div>
                                                         <div class="mb-3 mt-3" > <!--for 생략가능-->
                                                             <label class="form-label">제목</label>

@@ -76,20 +76,14 @@
             <div class="col-lg-3"></div>
             <div class="col-lg-8"> <!--검색 추가-->
                 <form th:action="@{/freeBoards/list}" class="board_search off" method="get">
-                    <input type="hidden"  value="">
-                    <input type="hidden"  value="s">
-                    <input type="hidden"  value="c">
-                    <input type="hidden"  value="w">
-                    <input type="hidden"  value="sc">
-                    <input type="hidden"  value="scw">
+                    <input type="hidden" name="" value="">
                     <input type="text" name="search" th:value="${search}" class="iText">
                     <select name="type">
                         <option th:seleceted="${type==null}" value="">검색메뉴선택</option>
-                        <option th:seleceted="${type=='i'}" value="s">아이디</option>
-                        <option th:seleceted="${type=='n'}" value="c">이름</option>
-                        <option th:seleceted="${type=='t'}" value="w">전화번호</option>
-                        <option th:seleceted="${type=='a'}" value="sc">주소1</option>
-                        <option th:seleceted="${type=='g'}" value="scw">생년월일</option>		</select>
+                        <option th:seleceted="${type=='t'}" value="s">제목</option>
+                        <option th:seleceted="${type=='c'}" value="c">내용</option>
+                        <option th:seleceted="${type=='n'}" value="n">이름</option>
+                    </select>
                     <button type="submit" class="btn btn-success btn-margin"  >검색</button>
                     <a class="btn btn-success" th:href="@{/freeBoards/insert}">글쓰기</a>
                 </form>

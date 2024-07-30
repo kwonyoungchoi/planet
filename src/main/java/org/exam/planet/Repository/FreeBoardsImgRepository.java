@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface BoardImgRepository extends JpaRepository<BoardImgEntity, Long> {
+public interface FreeBoardsImgRepository extends JpaRepository<BoardImgEntity, Long> {
 
     List<BoardImgEntity> findByFreeBoardsEntity_FreeBoardsNumOrderByBoardImgNumAsc(Long freeBoardsNum);
 

@@ -11,7 +11,7 @@ import org.exam.planet.DTO.FreeBoardsDTO;
 import org.exam.planet.Entity.BoardImgEntity;
 import org.exam.planet.Entity.FreeBoardsEntity;
 import org.exam.planet.Entity.MemberEntity;
-import org.exam.planet.Repository.BoardImgRepository;
+import org.exam.planet.Repository.FreeBoardsImgRepository;
 import org.exam.planet.Repository.FreeBoardsRepository;
 import org.exam.planet.Repository.MemberRepository;
 import org.exam.planet.util.FileUpload;
@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 //repository, entity, dto를 주입처리
@@ -41,9 +42,9 @@ public class FreeBoardsService {
     private final ModelMapper modelMapper;
     private final MemberRepository memberRepository;
     private final HttpSession httpSession;
-    private final FileService fileService;
+    private final FreeBoardsFileService freeBoardsFileService;
     private final FileUpload fileUpload;
-    private final BoardImgRepository boardImgRepository;
+    private final FreeBoardsImgRepository boardImgRepository;
 
     //view에서 DTO전달->Entity변환 후 데이터베이스에 저장
     public Long insert(@Valid FreeBoardsDTO freeBoardsDTO, MultipartFile[] files) {
@@ -64,14 +65,13 @@ public class FreeBoardsService {
 
         freeBoardsEntity.setMemberEntity(memberEntity);
 
-        log.info(freeBoardsEntity);
         log.info(freeBoardsDTO);
 
         // 게시글 저장
         freeBoardsRepository.save(freeBoardsEntity);
 
         if (files != null) {
-                    fileService.saveBoardImg(files, freeBoardsEntity.getFreeBoardsNum());
+                    freeBoardsFileService.saveBoardImg(files, freeBoardsEntity.getFreeBoardsNum());
         }
         return null;
     }
@@ -141,11 +141,19 @@ public class FreeBoardsService {
 
         Page<FreeBoardsEntity> freeBoardsEntities;
 
-        if (type.equals("i") && search != null) {
-            freeBoardsEntities = freeBoardsRepository.findByFreeBoardsTitle(search, pageable);
-        } else if (type.equals("n") && search != null) {
-            freeBoardsEntities = freeBoardsRepository.findByFreeBoardsContent(search, pageable);
-        } else {
+
+        if (type.equals("t") && search != null) {
+            freeBoardsEntities = freeBoardsRepository.findByFreeBoardsTitleContaining(search, pageable);
+        } else if (type.equals("c") && search != null) {
+            freeBoardsEntities = freeBoardsRepository.findByFreeBoardsContentContaining(search, pageable);
+        } else if (type.equals("n") && search != null){
+            List<Long> memberIds = memberRepository.findByMemNameContaining(search)
+                    .stream()
+                    .map(MemberEntity::getMemNum)
+                    .collect(Collectors.toList());
+            freeBoardsEntities = freeBoardsRepository.findByMemberEntityMemNumIn(memberIds, pageable);
+        }
+        else {
             freeBoardsEntities = freeBoardsRepository.findAll(pageable);
         }
 

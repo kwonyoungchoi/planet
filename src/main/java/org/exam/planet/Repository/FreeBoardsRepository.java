@@ -2,7 +2,6 @@ package org.exam.planet.Repository;
 
 
 import org.exam.planet.Entity.FreeBoardsEntity;
-import org.exam.planet.Entity.MemberEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,8 +15,9 @@ public interface FreeBoardsRepository extends JpaRepository<FreeBoardsEntity, Lo
 
     Optional<FreeBoardsEntity> findByFreeBoardsNum(Long freeBoardsNum);
 
-    Page<FreeBoardsEntity> findByFreeBoardsTitle(String search, Pageable pageable);
-    Page<FreeBoardsEntity> findByFreeBoardsContent(String search, Pageable pageable);
+    Page<FreeBoardsEntity> findByFreeBoardsTitleContaining(String search, Pageable pageable);
+    Page<FreeBoardsEntity> findByFreeBoardsContentContaining(String search, Pageable pageable);
+    Page<FreeBoardsEntity> findByMemberEntityMemNumIn(List<Long> memNums, Pageable pageable);
 
 
 
